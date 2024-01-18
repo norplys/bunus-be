@@ -18,13 +18,14 @@ enum Role {
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
+  phone     String   @unique
   name      String
   role      Role     @default(USER)
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Cart      Cart?
-  Order     Order?
+  cart      Cart?
+  order     Order?
 }
 
 model Cart {
@@ -57,8 +58,8 @@ model Menu {
   description String
   category    Category  @relation(fields: [categoryId], references: [id])
   categoryId  String
-  CartItem    CartItem?
-  OrderItem   OrderItem?
+  cartItem    CartItem?
+  orderItem   OrderItem?
 }
 
 model Category {

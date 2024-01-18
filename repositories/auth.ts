@@ -2,12 +2,13 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const createUser = (email: string, password : string, name : string) => {
+const createUser = (email: string, password : string, name : string, phone : string) => {
     return prisma.user.create({
         data: {
             email,
             password,
-            name
+            name,
+            phone
         }
     })
 }
@@ -20,8 +21,17 @@ const findUser = (email: string) => {
     })
 }
 
+const findPhone = (phone:string) => {
+    return prisma.user.findUnique({
+        where: {
+            phone
+        }   
+    })
+}
+
 
 export {
     createUser,
-    findUser
+    findUser,
+    findPhone
 }

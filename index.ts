@@ -1,5 +1,6 @@
 import express from 'express';
-import { Register, validateAuthBody } from './middleware/auth';
+import { validateAuthBody } from './middleware/auth';
+import { Register } from './services/auth';
 
 const app = express();
 const port = 3000;

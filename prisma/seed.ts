@@ -13,6 +13,7 @@ async function main() {
       email: "admin123@gmail.com",
       name: "test",
       password: await hashPassword("admin123"),
+      phone: "08123456789",
     },
   });
 }
