@@ -1,6 +1,6 @@
 import express from 'express';
-import { validateAuthBody } from './middleware/auth';
-import { Register } from './services/auth';
+import { validateRegisterBody, validateLogin } from './services/auth';
+import { register, login } from './controller/auth';
 
 const app = express();
 const port = 3000;
@@ -11,6 +11,7 @@ app.get('/', (req, res) => {
 }
 );
 
-app.post('/v1/login', validateAuthBody, Register);
+app.post('/v1/register', validateRegisterBody, register);
+app.post('/v1/login', validateLogin, login);
 
 app.listen(port, () => console.log(`Server is running on port http://localhost:${port}`));
