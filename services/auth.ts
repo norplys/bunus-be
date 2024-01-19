@@ -2,7 +2,7 @@ import { findUser, findPhone } from "../repositories/auth";
 import { Request, Response, NextFunction } from "express";
 import {z} from "zod";
 import {compare, hash} from "bcrypt";
-import { sign, verify } from "jsonwebtoken";
+import { Secret, sign, verify } from "jsonwebtoken";
 
 const indonesiaPhone = new RegExp(/^(^\+62\s?|^0)(\d{3,4}-?){2}\d{3,4}$/);
 
@@ -25,6 +25,16 @@ const errorMap = (err : any) => {
             [key]: error.message
         }
     });
+}
+
+const signJwt = (payload : object) => {
+    return sign(payload, process.env.SECRET_KEY as Secret, {
+        expiresIn : '2h'
+    })
+}
+
+const verifyJwt = (token : string) => {
+    return verify(token, process.env.SECRET_KEY as Secret)
 }
 
 const encryptPassword = async (password : string) => {
@@ -105,5 +115,7 @@ export {
     validateRegisterBody,
     validateLogin,
     encryptPassword,
-    comparePassword
+    comparePassword,
+    signJwt,
+    verifyJwt
 }

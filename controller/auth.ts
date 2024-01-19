@@ -1,15 +1,17 @@
 import { Request, Response } from "express";
-import { encryptPassword, comparePassword } from "../services/auth";
+import { encryptPassword, comparePassword, signJwt } from "../services/auth";
 import { createUser } from "../repositories/auth";
+import { exclude } from "../helper/exclude";
 
 const register = async (req : Request, res : Response) => {
     const { email, password, name, phone } = req.body;
     const hashedPassword = await encryptPassword(password);
     const user = await createUser(email, hashedPassword, name, phone);
+    const excludeUser = exclude(user, ["id","createdAt","updatedAt", "password"])
     return res.status(201).json({
         status: "success",
         data: {
-            user
+            ...excludeUser
         }
     });
 }
@@ -25,8 +27,19 @@ const login = async (req : Request, res : Response) => {
             message : "Invalid Password"
         })
     }
+    const payload = {
+        id: user.id,
+        email : user.email,
+        name : user.name
+    }
+    const token = signJwt(payload)
+    const excludeUser = exclude(user, ["id","createdAt","updatedAt","password"])
     res.status(200).json({
-        message : "Successfully logged in"
+        status : "Success",
+        message : "Successfully logged in",
+        data : {
+            ...excludeUser, token
+        }
     })
     }
     catch(err){
