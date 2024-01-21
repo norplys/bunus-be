@@ -16,7 +16,16 @@ async function main() {
       phone: "08123456789",
     },
   });
+
+  await prisma.category.createMany({
+    data : [
+      {name : 'main'},
+      {name : 'topping'},
+      {name : 'beverage'}
+    ]
+  })
 }
+
 
 main()
   .catch((e) => {
