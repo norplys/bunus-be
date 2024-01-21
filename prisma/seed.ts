@@ -24,8 +24,27 @@ async function main() {
       {name : 'beverage'}
     ]
   })
-}
 
+  const mockUuid = await prisma.category.findFirst({
+    where : {
+      name : 'main'
+    }
+  })
+
+  await prisma.menu.create({
+    data : {
+      name : 'Bubur Ayam Kampung',
+      price : 20000,
+      image : 'https://res.cloudinary.com/dpg0tbbot/image/upload/v1704978248/bunus/rcqltvzeguzxmldbamko.webp',
+      description : "lorem ipsum",
+      category : {
+        connect : {
+          id: mockUuid?.id
+        }
+      }
+    }
+  })
+}
 
 main()
   .catch((e) => {
