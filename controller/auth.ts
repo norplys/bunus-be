@@ -47,7 +47,17 @@ const login = async (req : Request, res : Response) => {
     }
 }
 
+const getMe = async (req : Request, res : Response) => {
+
+    return res.status(200).json({
+        status : "Success",
+        message : "Succesfully Verify JWT",
+        data : res.locals.user
+    })   
+}
+
 export {
     register,
-    login
+    login,
+    getMe
 }

@@ -29,9 +29,16 @@ const findPhone = (phone:string) => {
     })
 }
 
-
+const findId = (id : string) => {
+    return prisma.user.findUnique({
+        where : {
+            id
+        }
+    })
+}
 export {
     createUser,
     findUser,
-    findPhone
+    findPhone,
+    findId
 }

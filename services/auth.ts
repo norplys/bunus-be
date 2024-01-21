@@ -1,8 +1,9 @@
-import { findUser, findPhone } from "../repositories/auth";
+import { findUser, findPhone, findId } from "../repositories/auth";
 import { Request, Response, NextFunction } from "express";
 import {z} from "zod";
 import {compare, hash} from "bcrypt";
-import { Secret, sign, verify } from "jsonwebtoken";
+import { Jwt, JwtPayload, Secret, sign, verify } from "jsonwebtoken";
+import { exclude } from "../helper/exclude";
 
 const indonesiaPhone = new RegExp(/^(^\+62\s?|^0)(\d{3,4}-?){2}\d{3,4}$/);
 
@@ -88,7 +89,7 @@ const validateLogin = async (req : Request, res : Response, next : NextFunction)
         loginSchema.parse({email, password});
         const checkUser = await findUser(email);
         if (!checkUser) {
-            return res.status(400).json({
+            return res.status(404).json({
                 status: "error",
                 message: "Email not registered"
             });
@@ -107,6 +108,50 @@ const validateLogin = async (req : Request, res : Response, next : NextFunction)
     }
 }
 
+const validateJwt = async (req : Request, res : Response, next : NextFunction) => {
+    try{
+        const token = req.headers.authorization?.split(" ")[1];
+        if(!token){
+            return res.status(401).json({
+                status : "Failed",
+                message : "Missing Token"
+            })
+        }
+        const { id } = verifyJwt(token) as JwtPayload;
+            if( id ){
+            const user = await findId(id);
+            if(!user){
+                return res.status(401).json({
+                    status : "Failed",
+                    message : "Invalid Token"
+                })
+            }else{
+                const excludeUser = exclude(user, ['createdAt','updatedAt','password']);
+                res.locals.user = excludeUser
+                next();
+            }
+        } else {
+            return res.status(401).json({
+                status : "Failed",
+                message : "Invalid Token"
+            })
+        }
+    }
+    catch(err){
+        if (err instanceof Error) {
+            return res.status(401).json({
+                status : "Failed",
+                message : err.message
+            })
+        }else{
+            return res.status(500).json({
+                status : "Failed",
+                message : "Internal Server Error"
+            })
+        }
+    }
+}
+
 
     
 
@@ -117,5 +162,6 @@ export {
     encryptPassword,
     comparePassword,
     signJwt,
-    verifyJwt
+    verifyJwt,
+    validateJwt
 }
