@@ -1,6 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../helper/prismaClient"
 
 const createUser = (email: string, password : string, name : string, phone : string) => {
     return prisma.user.create({

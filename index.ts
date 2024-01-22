@@ -1,6 +1,9 @@
 import express from 'express';
 import { validateRegisterBody, validateLogin, validateJwt } from './services/auth';
 import { register, login, getMe } from './controller/auth';
+import { category } from './controller/category';
+import { getMenus } from './controller/menu';
+
 
 const app = express();
 const port = 3000;
@@ -14,6 +17,9 @@ app.get('/', (req, res) => {
 app.post('/v1/register', validateRegisterBody, register);
 app.post('/v1/login', validateLogin, login);
 app.get('/v1/get-me', validateJwt, getMe);
+
+app.get('/v1/categories', category)
+app.get('/v1/menus', getMenus)
 
 
 
