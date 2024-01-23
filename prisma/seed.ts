@@ -42,6 +42,13 @@ async function main() {
     categoryId : mockUuid[0].id
   },
   {
+    name : 'Bubur Polos',
+    price : 18000,
+    image : 'https://res.cloudinary.com/dpg0tbbot/image/upload/v1704978248/bunus/rcqltvzeguzxmldbamko.webp',
+    description : "lorem ipsum",
+    categoryId : mockUuid[0].id
+  },
+  {
     name : 'Telur Asin',
     price : 9000,
     image : 'https://res.cloudinary.com/dpg0tbbot/image/upload/v1704978287/bunus/z59fmlwb1fhm41e0q4js.webp',
