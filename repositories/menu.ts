@@ -1,27 +1,33 @@
 import { prisma } from "../helper/prismaClient";
 
 const selected = {
-    id : true,
-    name : true,
-    image : true,
-    price : true,
-    description : true,
-}
+  id: true,
+  name: true,
+  image: true,
+  price: true,
+  description: true,
+};
 
-const getAllMenu = (id : string | undefined) => {
-    if(!id){
-        return prisma.menu.findMany({
-            select : selected
-        });
-    }
+const getAllMenu = (id: string | undefined) => {
+  if (!id) {
     return prisma.menu.findMany({
-        where : {
-            categoryId : id
-        },
-        select : selected
-    })
-}
+      select: selected,
+    });
+  }
+  return prisma.menu.findMany({
+    where: {
+      categoryId: id,
+    },
+    select: selected,
+  });
+};
 
-export {
-    getAllMenu
-}
+const getDetailMenu = (id: string) => {
+  return prisma.menu.findUnique({
+    where: {
+      id,
+    },
+  });
+};
+
+export { getAllMenu, getDetailMenu };

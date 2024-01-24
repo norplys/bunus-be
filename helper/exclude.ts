@@ -1,12 +1,10 @@
-const exclude = (
-    user : object,
-    keys : string[]
-  ) => {
-    return Object.fromEntries(
-      Object.entries(user).filter(([key]) => !keys.includes(key))
-    )
+const exclude = (data: object | null, keys: string[]) => {
+  if (!data) {
+    return data;
   }
+  return Object.fromEntries(
+    Object.entries(data).filter(([key]) => !keys.includes(key)),
+  );
+};
 
-export {
-    exclude
-}
+export { exclude };

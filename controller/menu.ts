@@ -1,5 +1,6 @@
-import { getAllMenu } from "../repositories/menu";
+import { getAllMenu, getDetailMenu } from "../repositories/menu";
 import { Request, Response } from "express";
+import { exclude } from "../helper/exclude";
 
 const getMenus = async (req: Request, res: Response) => {
   const { id } = <{ id: string | undefined }>req.query;
@@ -11,4 +12,15 @@ const getMenus = async (req: Request, res: Response) => {
   });
 };
 
-export { getMenus };
+const getDetailMenuController = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const menu = await getDetailMenu(id);
+  const excludeMenu = exclude(menu, ["createdAt", "updatedAt", "categoryId"]);
+  res.status(200).json({
+    status: "Success",
+    message: "Successfully Retrieve Data",
+    data: excludeMenu,
+  });
+};
+
+export { getMenus, getDetailMenuController };
