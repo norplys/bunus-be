@@ -23,4 +23,19 @@ const getDetailMenuController = async (req: Request, res: Response) => {
   });
 };
 
-export { getMenus, getDetailMenuController };
+const createMenu = (req: Request, res: Response) => {
+  const { name, price, description } = req.body;
+  const image = res.locals.image;
+  res.status(201).json({
+    status: "Success",
+    message: "Menu created successfully",
+    data: {
+      name,
+      price,
+      description,
+      image,
+    },
+  });
+};
+
+export { getMenus, getDetailMenuController, createMenu };

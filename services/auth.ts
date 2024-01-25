@@ -2,8 +2,9 @@ import { findUser, findPhone, findId } from "../repositories/auth";
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 import { compare, hash } from "bcrypt";
-import { Jwt, JwtPayload, Secret, sign, verify } from "jsonwebtoken";
+import { JwtPayload, Secret, sign, verify } from "jsonwebtoken";
 import { exclude } from "../helper/exclude";
+import { errorMap } from "../helper/zError";
 
 const indonesiaPhone = new RegExp(/^(^\+62\s?|^0)(\d{3,4}-?){2}\d{3,4}$/);
 
@@ -20,15 +21,6 @@ const loginSchema = z.object({
   email: z.string().email(),
   password: z.string(),
 });
-
-const errorMap = (err: any) => {
-  err.errors.map((error: any) => {
-    const key = error.path.join(".");
-    return {
-      [key]: error.message,
-    };
-  });
-};
 
 const signJwt = (payload: object) => {
   return sign(payload, process.env.SECRET_KEY as Secret, {
@@ -55,12 +47,6 @@ const validateRegisterBody = async (
 ) => {
   try {
     const { email, password, name, phone } = req.body;
-    if (!email || !password || !name || !phone) {
-      return res.status(400).json({
-        status: "error",
-        message: "Email, password, phone, and name are required!",
-      });
-    }
     dataSchema.parse({ email, password, name, phone });
     const checkUser = await findUser(email);
     const checkPhone = await findPhone(phone);

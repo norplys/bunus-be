@@ -6,8 +6,16 @@ import {
 } from "./services/auth";
 import { register, login, getMe } from "./controller/auth";
 import { category } from "./controller/category";
-import { getMenus, getDetailMenuController } from "./controller/menu";
-import { uploadImageToLocal, uploadToCloudinary } from "./services/menu";
+import {
+  getMenus,
+  getDetailMenuController,
+  createMenu,
+} from "./controller/menu";
+import {
+  uploadImageToLocal,
+  uploadToCloudinary,
+  createMenuValidation,
+} from "./services/menu";
 
 const app = express();
 const port = 3000;
@@ -24,7 +32,13 @@ app.get("/v1/get-me", validateJwt, getMe);
 app.get("/v1/categories", category);
 app.get("/v1/menus", getMenus);
 app.get("/v1/menus/:id", getDetailMenuController);
-app.post("/v1/menus", uploadImageToLocal, uploadToCloudinary);
+app.post(
+  "/v1/menus",
+  createMenuValidation,
+  uploadImageToLocal,
+  uploadToCloudinary,
+  createMenu,
+);
 
 app.listen(port, () =>
   console.log(`Server is running on port http://localhost:${port}`),
