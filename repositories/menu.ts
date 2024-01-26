@@ -30,4 +30,26 @@ const getDetailMenu = (id: string) => {
   });
 };
 
-export { getAllMenu, getDetailMenu };
+type menu = {
+  name: string;
+  price: number;
+  image: string;
+  description: string;
+  categoryId: string;
+};
+
+const createMenu = (data: menu) => {
+  return prisma.menu.create({
+    data,
+  });
+};
+
+const deleteMenu = (id: string) => {
+  return prisma.menu.delete({
+    where: {
+      id,
+    },
+  });
+};
+
+export { getAllMenu, getDetailMenu, createMenu, deleteMenu };

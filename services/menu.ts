@@ -3,6 +3,7 @@ import { cloudinary } from "../helper/cloudinary";
 import multer from "multer";
 import { z } from "zod";
 import { errorMap } from "../helper/zError";
+import { category } from "../controller/category";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("image");
@@ -11,6 +12,7 @@ const menuSchema = z.object({
   name: z.string(),
   price: z.number(),
   description: z.string(),
+  categoryId: z.string(),
 });
 
 const createMenuValidation = (
@@ -19,9 +21,14 @@ const createMenuValidation = (
   next: NextFunction,
 ) => {
   try {
-    const { name, price, description } = req.body;
+    const { name, price, description, categoryId } = req.body;
+    const image = res.locals.image;
+    if (!image) {
+      res.locals.image =
+        "https://res.cloudinary.com/dpg0tbbot/image/upload/v1704978359/bunus/ntqqtbkh2zme9tpo3zcn.svg";
+    }
     const newPrice = Number(price);
-    menuSchema.parse({ name, price: newPrice, description });
+    menuSchema.parse({ name, price: newPrice, description, categoryId });
     next();
   } catch (err) {
     if (err instanceof z.ZodError) {

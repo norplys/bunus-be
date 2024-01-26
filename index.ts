@@ -9,7 +9,8 @@ import { category } from "./controller/category";
 import {
   getMenus,
   getDetailMenuController,
-  createMenu,
+  createMenuContoller,
+  deleteMenuController,
 } from "./controller/menu";
 import {
   uploadImageToLocal,
@@ -37,8 +38,9 @@ app.post(
   uploadImageToLocal,
   uploadToCloudinary,
   createMenuValidation,
-  createMenu,
+  createMenuContoller,
 );
+app.delete("/v1/menus/:id", deleteMenuController);
 
 app.listen(port, () =>
   console.log(`Server is running on port http://localhost:${port}`),

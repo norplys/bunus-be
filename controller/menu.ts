@@ -1,4 +1,9 @@
-import { getAllMenu, getDetailMenu } from "../repositories/menu";
+import {
+  getAllMenu,
+  getDetailMenu,
+  createMenu,
+  deleteMenu,
+} from "../repositories/menu";
 import { Request, Response } from "express";
 import { exclude } from "../helper/exclude";
 
@@ -23,9 +28,10 @@ const getDetailMenuController = async (req: Request, res: Response) => {
   });
 };
 
-const createMenu = (req: Request, res: Response) => {
-  const { name, price, description } = req.body;
+const createMenuContoller = async (req: Request, res: Response) => {
+  const { name, price, description, categoryId } = req.body;
   const image = res.locals.image;
+  await createMenu({ name, price, description, image, categoryId });
   res.status(201).json({
     status: "Success",
     message: "Menu created successfully",
@@ -38,4 +44,18 @@ const createMenu = (req: Request, res: Response) => {
   });
 };
 
-export { getMenus, getDetailMenuController, createMenu };
+const deleteMenuController = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  await deleteMenu(id);
+  res.status(200).json({
+    status: "Success",
+    message: "Menu deleted successfully",
+  });
+};
+
+export {
+  getMenus,
+  getDetailMenuController,
+  createMenuContoller,
+  deleteMenuController,
+};
