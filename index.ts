@@ -34,9 +34,9 @@ app.get("/v1/menus", getMenus);
 app.get("/v1/menus/:id", getDetailMenuController);
 app.post(
   "/v1/menus",
-  createMenuValidation,
   uploadImageToLocal,
   uploadToCloudinary,
+  createMenuValidation,
   createMenu,
 );
 

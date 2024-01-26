@@ -57,6 +57,10 @@ const uploadToCloudinary = (
   next: NextFunction,
 ) => {
   const fileBase64 = req.file?.buffer.toString("base64");
+  if (!fileBase64) {
+    next();
+    return;
+  }
   const file = `data:${req.file?.mimetype};base64,${fileBase64}`;
   cloudinary.uploader.upload(file, (err, result) => {
     if (err) {
