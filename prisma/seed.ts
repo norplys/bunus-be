@@ -15,6 +15,12 @@ const main = async () => {
       name: "test",
       password: await hashPassword("admin123"),
       phone: "08123456789",
+      role: "ADMIN",
+      cart: {
+        create: {
+          total: 0,
+        },
+      },
     },
   });
 

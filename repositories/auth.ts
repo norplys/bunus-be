@@ -12,6 +12,12 @@ const createUser = (
       password,
       name,
       phone,
+      role: "USER",
+      cart: {
+        create: {
+          total: 0,
+        },
+      },
     },
   });
 };

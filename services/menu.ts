@@ -3,7 +3,6 @@ import { cloudinary } from "../helper/cloudinary";
 import multer from "multer";
 import { z } from "zod";
 import { errorMap } from "../helper/zError";
-import { category } from "../controller/category";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("image");
