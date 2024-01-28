@@ -17,6 +17,12 @@ import {
   uploadToCloudinary,
   createMenuValidation,
 } from "./services/menu";
+import { createCartItemController } from "./controller/cart";
+import {
+  getUserCartService,
+  validateCartBody,
+  countTotal,
+} from "./services/cart";
 
 const app = express();
 const port = 3000;
@@ -41,6 +47,15 @@ app.post(
   createMenuContoller,
 );
 app.delete("/v1/menus/:id", deleteMenuController);
+
+app.post(
+  "/v1/cart-item",
+  validateJwt,
+  validateCartBody,
+  getUserCartService,
+  countTotal,
+  createCartItemController,
+);
 
 app.listen(port, () =>
   console.log(`Server is running on port http://localhost:${port}`),

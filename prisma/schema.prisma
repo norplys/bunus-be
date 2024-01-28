@@ -44,6 +44,8 @@ model CartItem {
   updatedAt DateTime @updatedAt
   cart      Cart     @relation(fields: [cartId], references: [id])
   cartId    String
+  quantity  Int
+  total     Decimal
   menu      Menu    @relation(fields: [menuId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   menuId    String   @unique
 }
