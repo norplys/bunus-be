@@ -22,6 +22,7 @@ import {
   getUserCartService,
   validateCartBody,
   countTotal,
+  checkCartItem,
 } from "./services/cart";
 
 const app = express();
@@ -54,6 +55,7 @@ app.post(
   validateCartBody,
   getUserCartService,
   countTotal,
+  checkCartItem,
   createCartItemController,
 );
 

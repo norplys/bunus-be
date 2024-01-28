@@ -24,4 +24,21 @@ const createCartItem = (
   });
 };
 
-export { getUserCart, createCartItem };
+const getCartItem = (cartId: string, menuId: string) => {
+  return prisma.cartItem.findUnique({
+    where: {
+      cartId,
+      menuId,
+    },
+  });
+};
+
+const updateCartItem = (id: string, data: object) => {
+  return prisma.cartItem.update({
+    where: {
+      id,
+    },
+    data,
+  });
+};
+export { getUserCart, createCartItem, getCartItem, updateCartItem };
