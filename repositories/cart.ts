@@ -41,4 +41,36 @@ const updateCartItem = (id: string, data: object) => {
     data,
   });
 };
-export { getUserCart, createCartItem, getCartItem, updateCartItem };
+
+const getCartData = (id: string) => {
+  return prisma.cart.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      items: {
+        select: {
+          total: true,
+          quantity: true,
+          id: true,
+          menu: {
+            select: {
+              id: true,
+              name: true,
+              price: true,
+              image: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+export {
+  getUserCart,
+  createCartItem,
+  getCartItem,
+  updateCartItem,
+  getCartData,
+};

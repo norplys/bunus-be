@@ -72,7 +72,7 @@ const countTotal = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { menuId, quantity } = req.body;
     const menu = await getDetailMenu(menuId);
-    const total = quantity * Number(menu?.price);
+    const total = quantity * +menu!.price;
     res.locals.total = total;
     next();
   } catch (err) {

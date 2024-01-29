@@ -17,9 +17,7 @@ const main = async () => {
       phone: "08123456789",
       role: "ADMIN",
       cart: {
-        create: {
-          total: 0,
-        },
+        create: {},
       },
     },
   });

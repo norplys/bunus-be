@@ -14,9 +14,7 @@ const createUser = (
       phone,
       role: "USER",
       cart: {
-        create: {
-          total: 0,
-        },
+        create: {},
       },
     },
   });

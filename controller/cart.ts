@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createCartItem } from "../repositories/cart";
+import { createCartItem, getCartData } from "../repositories/cart";
 
 const createCartItemController = async (req: Request, res: Response) => {
   try {
@@ -17,4 +17,24 @@ const createCartItemController = async (req: Request, res: Response) => {
   }
 };
 
-export { createCartItemController };
+const getCart = async (req: Request, res: Response) => {
+  try {
+    const id = res.locals.cartId;
+    const data = await getCartData(id);
+    const total = data?.items
+      .map((each) => each.total)
+      .reduce((acc, current) => acc + current);
+    res.status(200).json({
+      status: "Success",
+      message: "Successfully Retrieve Data",
+      data: {
+        ...data,
+        total,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export { createCartItemController, getCart };
