@@ -17,7 +17,11 @@ import {
   uploadToCloudinary,
   createMenuValidation,
 } from "./services/menu";
-import { createCartItemController, getCart } from "./controller/cart";
+import {
+  createCartItemController,
+  getCart,
+  deleteCart,
+} from "./controller/cart";
 import {
   getUserCartService,
   validateCartBody,
@@ -59,6 +63,7 @@ app.post(
   createCartItemController,
 );
 app.get("/v1/cart", validateJwt, getUserCartService, getCart);
+app.delete("/v1/cart", validateJwt, getUserCartService, deleteCart);
 
 app.listen(port, () =>
   console.log(`Server is running on port http://localhost:${port}`),

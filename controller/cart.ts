@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { createCartItem, getCartData } from "../repositories/cart";
+import {
+  createCartItem,
+  getCartData,
+  deleteCartData,
+} from "../repositories/cart";
 
 const createCartItemController = async (req: Request, res: Response) => {
   try {
@@ -21,8 +25,18 @@ const getCart = async (req: Request, res: Response) => {
   try {
     const id = res.locals.cartId;
     const data = await getCartData(id);
+    if (!data?.items.length) {
+      return res.status(200).json({
+        status: "Success",
+        message: "Successfully Retrieve Data",
+        data: {
+          ...data,
+          total: 0,
+        },
+      });
+    }
     const total = data?.items
-      .map((each) => each.total)
+      .map((each) => each.total || 0)
       .reduce((acc, current) => acc + current);
     res.status(200).json({
       status: "Success",
@@ -37,4 +51,16 @@ const getCart = async (req: Request, res: Response) => {
   }
 };
 
-export { createCartItemController, getCart };
+const deleteCart = async (req: Request, res: Response) => {
+  try {
+    const id = res.locals.cartId;
+    await deleteCartData(id);
+    res.status(200).json({
+      status: "Success",
+      message: `Successfully Delete Data with id ${id}`,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+export { createCartItemController, getCart, deleteCart };

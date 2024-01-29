@@ -17,6 +17,12 @@ const getUserCartService = async (
   try {
     const { id } = res.locals.user;
     const userCart = await getUserCart(id);
+    if (!userCart) {
+      res.status(404).json({
+        status: "Failed",
+        message: "Cart not found",
+      });
+    }
     res.locals.cartId = userCart?.id;
     next();
   } catch (err) {
