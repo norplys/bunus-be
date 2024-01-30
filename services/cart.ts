@@ -74,10 +74,38 @@ const checkCartItem = async (
   }
 };
 
+const checkCartUpdate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { menuId } = req.body;
+    const cartId = res.locals.cartId;
+    const cartItem = await getCartItem(cartId, menuId);
+    if (!cartItem) {
+      return res.status(404).json({
+        status: "Failed",
+        message: "Cart data not found",
+      });
+    }
+    res.locals.cartItemId = cartItem?.id;
+    next();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const countTotal = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { menuId, quantity } = req.body;
     const menu = await getDetailMenu(menuId);
+    if (!menu) {
+      return res.status(404).json({
+        status: "Failed",
+        message: "Menu not found",
+      });
+    }
     const total = quantity * +menu!.price;
     res.locals.total = total;
     next();
@@ -85,4 +113,10 @@ const countTotal = async (req: Request, res: Response, next: NextFunction) => {
     console.log(err);
   }
 };
-export { getUserCartService, validateCartBody, countTotal, checkCartItem };
+export {
+  getUserCartService,
+  validateCartBody,
+  countTotal,
+  checkCartItem,
+  checkCartUpdate,
+};

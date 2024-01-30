@@ -3,6 +3,7 @@ import {
   createCartItem,
   getCartData,
   deleteCartData,
+  updateCartItem,
 } from "../repositories/cart";
 
 const createCartItemController = async (req: Request, res: Response) => {
@@ -51,6 +52,26 @@ const getCart = async (req: Request, res: Response) => {
   }
 };
 
+const updateCart = async (req: Request, res: Response) => {
+  try {
+    const { quantity } = req.body;
+    const cartId = res.locals.cartItemId;
+    const total = res.locals.total;
+    const data = {
+      quantity,
+      total,
+    };
+    const cartItem = await updateCartItem(cartId, data);
+    res.status(200).json({
+      status: "Success",
+      message: "Cart item successfully updated",
+      data: cartItem,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const deleteCart = async (req: Request, res: Response) => {
   try {
     const id = res.locals.cartId;
@@ -63,4 +84,5 @@ const deleteCart = async (req: Request, res: Response) => {
     console.log(err);
   }
 };
-export { createCartItemController, getCart, deleteCart };
+
+export { createCartItemController, getCart, deleteCart, updateCart };

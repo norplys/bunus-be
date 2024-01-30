@@ -21,12 +21,14 @@ import {
   createCartItemController,
   getCart,
   deleteCart,
+  updateCart,
 } from "./controller/cart";
 import {
   getUserCartService,
   validateCartBody,
   countTotal,
   checkCartItem,
+  checkCartUpdate,
 } from "./services/cart";
 
 const app = express();
@@ -36,11 +38,11 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Ping Successfully!");
 });
-
+// auth
 app.post("/v1/register", validateRegisterBody, register);
 app.post("/v1/login", validateLogin, login);
 app.get("/v1/get-me", validateJwt, getMe);
-
+// menu
 app.get("/v1/categories", category);
 app.get("/v1/menus", getMenus);
 app.get("/v1/menus/:id", getDetailMenuController);
@@ -52,7 +54,7 @@ app.post(
   createMenuContoller,
 );
 app.delete("/v1/menus/:id", deleteMenuController);
-
+// cart
 app.post(
   "/v1/cart-item",
   validateJwt,
@@ -61,6 +63,15 @@ app.post(
   countTotal,
   checkCartItem,
   createCartItemController,
+);
+app.put(
+  "/v1/cart-item",
+  validateJwt,
+  validateCartBody,
+  getUserCartService,
+  countTotal,
+  checkCartUpdate,
+  updateCart,
 );
 app.get("/v1/cart", validateJwt, getUserCartService, getCart);
 app.delete("/v1/cart", validateJwt, getUserCartService, deleteCart);
