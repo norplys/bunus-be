@@ -31,6 +31,7 @@ import {
   checkCartUpdate,
 } from "./services/cart";
 import { createOrderController } from "./controller/order";
+import { validateOrderBody } from "./services/order";
 
 const app = express();
 const port = 3000;
@@ -77,7 +78,7 @@ app.put(
 app.get("/v1/cart", validateJwt, getUserCartService, getCart);
 app.delete("/v1/cart", validateJwt, getUserCartService, deleteCart);
 // order
-app.post("/v1/order", validateJwt, createOrderController);
+app.post("/v1/order", validateJwt, validateOrderBody, createOrderController);
 
 app.listen(port, () =>
   console.log(`Server is running on port http://localhost:${port}`),
