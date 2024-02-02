@@ -30,7 +30,11 @@ import {
   checkCartItem,
   checkCartUpdate,
 } from "./services/cart";
-import { createOrderController } from "./controller/order";
+import {
+  createOrderController,
+  getAllUserOrderController,
+  deleteOrderController,
+} from "./controller/order";
 import { validateOrderBody } from "./services/order";
 
 const app = express();
@@ -78,7 +82,9 @@ app.put(
 app.get("/v1/cart", validateJwt, getUserCartService, getCart);
 app.delete("/v1/cart", validateJwt, getUserCartService, deleteCart);
 // order
-app.post("/v1/order", validateJwt, validateOrderBody, createOrderController);
+app.get("/v1/orders", validateJwt, getAllUserOrderController);
+app.post("/v1/orders", validateJwt, validateOrderBody, createOrderController);
+app.delete("/v1/orders/:id", validateJwt, deleteOrderController);
 
 app.listen(port, () =>
   console.log(`Server is running on port http://localhost:${port}`),

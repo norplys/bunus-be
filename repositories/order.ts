@@ -22,4 +22,20 @@ const createOrder = (items: any, userId: string) => {
   });
 };
 
-export { createOrder };
+const getAllUserOrder = (userId: string) => {
+  return prisma.order.findMany({
+    where: {
+      userId,
+    },
+  });
+};
+
+const deleteOrder = (userId: string, id: string) => {
+  return prisma.order.delete({
+    where: {
+      id,
+    },
+  });
+};
+
+export { createOrder, getAllUserOrder, deleteOrder };
