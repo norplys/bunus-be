@@ -1,14 +1,37 @@
 import { Request, Response, NextFunction } from "express";
+import { z } from "zod";
+import { errorMap } from "../helper/zError";
+
+const orderBodySchema = z.object({
+  total: z.number(),
+  items: z.array(
+    z.object({
+      menuId: z.string(),
+      quantity: z.number(),
+    }),
+  ),
+});
 
 const validateOrderBody = (req: Request, res: Response, next: NextFunction) => {
-  const { items } = req.body;
-  if (!items?.length) {
-    return res.status(400).json({
-      status: "Failed",
-      message: "Items is required",
-    });
+  try {
+    const { total, items } = req.body;
+    orderBodySchema.parse({ total, items });
+    if (!items?.length) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Items is required",
+      });
+    }
+    next();
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      const errors = errorMap(err);
+      return res.status(400).json({
+        status: "Failed",
+        message: errors,
+      });
+    }
   }
-  next();
 };
 
 export { validateOrderBody };

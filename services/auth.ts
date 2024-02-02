@@ -24,7 +24,7 @@ const loginSchema = z.object({
 
 const signJwt = (payload: object) => {
   return sign(payload, process.env.SECRET_KEY as Secret, {
-    expiresIn: "2h",
+    expiresIn: "5h",
   });
 };
 

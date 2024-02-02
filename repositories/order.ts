@@ -1,9 +1,10 @@
 import { prisma } from "../helper/prismaClient";
 
-const createOrder = (items: any, userId: string) => {
+const createOrder = (total: number, items: any, userId: string) => {
   return prisma.order.create({
     data: {
-      userId: userId,
+      userId,
+      total,
       payment: {
         create: {
           status: "pending",
