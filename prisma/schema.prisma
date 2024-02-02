@@ -96,8 +96,8 @@ model OrderItem {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  order     Order    @relation(fields: [orderId], references: [id])
-  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  orderId   String   
   menu      Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   menuId    String   
   quantity  Int
