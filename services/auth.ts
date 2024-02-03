@@ -149,6 +149,21 @@ const validateJwt = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const validateAdmin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const user = res.locals.user;
+  if (user?.role !== "admin") {
+    return res.status(403).json({
+      status: "Failed",
+      message: "Forbidden",
+    });
+  }
+  next();
+};
+
 export {
   validateRegisterBody,
   validateLogin,
@@ -157,4 +172,5 @@ export {
   signJwt,
   verifyJwt,
   validateJwt,
+  validateAdmin,
 };

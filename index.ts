@@ -3,6 +3,7 @@ import {
   validateRegisterBody,
   validateLogin,
   validateJwt,
+  validateAdmin,
 } from "./services/auth";
 import { register, login, getMe } from "./controller/auth";
 import { category } from "./controller/category";
@@ -54,12 +55,14 @@ app.get("/v1/menus", getMenus);
 app.get("/v1/menus/:id", getDetailMenuController);
 app.post(
   "/v1/menus",
+  validateJwt,
+  validateAdmin,
   uploadImageToLocal,
   uploadToCloudinary,
   createMenuValidation,
   createMenuContoller,
 );
-app.delete("/v1/menus/:id", deleteMenuController);
+app.delete("/v1/menus/:id", validateJwt, validateAdmin, deleteMenuController);
 // cart
 app.post(
   "/v1/cart-item",
