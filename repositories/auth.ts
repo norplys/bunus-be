@@ -2,9 +2,9 @@ import { prisma } from "../helper/prismaClient";
 
 const createUser = (
   email: string,
-  password: string,
+  password: string | null,
   name: string,
-  phone: string,
+  phone: string | null,
 ) => {
   return prisma.user.create({
     data: {

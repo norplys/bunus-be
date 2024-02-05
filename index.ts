@@ -1,5 +1,4 @@
 import express from "express";
-import { google } from "googleapis";
 import {
   validateRegisterBody,
   validateLogin,
@@ -38,54 +37,20 @@ import {
   deleteOrderController,
 } from "./controller/order";
 import { validateOrderBody } from "./services/order";
+import { redirect, oAuthExist, findAndCreateUser } from "./services/oAuth2";
 
 const app = express();
 const port = 3000;
-
-const oauth2Client = new google.auth.OAuth2(
-  process.env.CLIENT_ID,
-  process.env.CLIENT_SECRET,
-  process.env.REDIRECT_URI,
-);
-
-const scopes = [
-  "https://www.googleapis.com/auth/userinfo.email",
-  "https://www.googleapis.com/auth/userinfo.profile",
-];
-
-const authUrl = oauth2Client.generateAuthUrl({
-  access_type: "offline",
-  scope: scopes,
-  include_granted_scopes: true,
-});
 
 app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Ping Successfully!");
 });
+
 // google auth
-app.get("/auth/google", (req, res) => {
-  res.redirect(authUrl);
-});
-app.get("/api/sessions/oauth/google", async (req, res) => {
-  try {
-    const { code } = req.query;
-    const { tokens } = await oauth2Client.getToken(code as string);
-    oauth2Client.setCredentials(tokens);
-    const oauth2 = google.oauth2({
-      auth: oauth2Client,
-      version: "v2",
-    });
-    const { data } = await oauth2.userinfo.get();
-    if (!data) {
-      return res.status(400).send("Error");
-    }
-    res.send(data);
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Error");
-  }
-});
+app.get("/auth/google", redirect);
+app.get("/api/sessions/oauth/google", oAuthExist, findAndCreateUser);
+
 // auth
 app.post("/v1/register", validateRegisterBody, register);
 app.post("/v1/login", validateLogin, login);
