@@ -38,6 +38,7 @@ import {
 } from "./controller/order";
 import { validateOrderBody } from "./services/order";
 import { redirect, oAuthExist, findAndCreateUser } from "./services/oAuth2";
+import { googleController } from "./controller/oAuth2";
 
 const app = express();
 const port = 3000;
@@ -49,7 +50,12 @@ app.get("/", (req, res) => {
 
 // google auth
 app.get("/auth/google", redirect);
-app.get("/api/sessions/oauth/google", oAuthExist, findAndCreateUser);
+app.get(
+  "/api/sessions/oauth/google",
+  oAuthExist,
+  findAndCreateUser,
+  googleController,
+);
 
 // auth
 app.post("/v1/register", validateRegisterBody, register);

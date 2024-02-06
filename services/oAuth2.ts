@@ -39,8 +39,7 @@ const oAuthExist = async (req: Request, res: Response, next: NextFunction) => {
     res.locals.user = data;
     next();
   } catch (err) {
-    console.log(err);
-    res.status(500).send("Error");
+    res.status(500).send(err);
   }
 };
 
@@ -51,11 +50,12 @@ const findAndCreateUser = async (
 ) => {
   try {
     const { email, name } = res.locals.user;
-    const user = await findUser(email);
+    let user = await findUser(email);
     if (!user) {
-      await createUser(email, null, name, null);
+      user = await createUser(email, null, name, null);
     }
-    res.status(200).send("Success");
+    res.locals.user = user;
+    next();
   } catch (err) {
     console.log(err);
     res.status(500).send("Error");
