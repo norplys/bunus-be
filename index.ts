@@ -61,6 +61,7 @@ app.get(
 app.post("/v1/register", validateRegisterBody, register);
 app.post("/v1/login", validateLogin, login);
 app.get("/v1/get-me", validateJwt, getMe);
+
 // menu
 app.get("/v1/categories", category);
 app.get("/v1/menus", getMenus);

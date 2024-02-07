@@ -16,16 +16,33 @@ enum Role {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  phone     String?   @unique
-  name      String
-  role      Role     @default(USER)
-  password  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  cart      Cart?
-  order     Order[]
+  id         String   @id @default(uuid())
+  email      String   @unique
+  phone      String?  @unique
+  name       String
+  role       Role     @default(USER)
+  password   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  isVerified Boolean  @default(false)
+  verify     Verify?
+  cart       Cart?
+  token      Token?
+  order      Order[]
+}
+
+model Verify {
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String   @unique
+  expiredAt   DateTime
+  verifyToken String
+}
+
+model Token {
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+  expiredAt DateTime
+  token     String
 }
 
 model Cart {
@@ -33,7 +50,7 @@ model Cart {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String      @unique
+  userId    String     @unique
   items     CartItem[]
 }
 
@@ -45,19 +62,19 @@ model CartItem {
   cartId    String
   quantity  Int
   total     Int
-  menu      Menu    @relation(fields: [menuId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  menu      Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   menuId    String   @unique
 }
 
 model Menu {
-  id          String    @id @default(uuid())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id          String      @id @default(uuid())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   name        String
   price       Int
   image       String
   description String
-  category    Category  @relation(fields: [categoryId], references: [id])
+  category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  String
   cartItem    CartItem?
   orderItem   OrderItem[]
@@ -72,24 +89,26 @@ model Category {
 }
 
 model Order {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String      @id @default(uuid())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  total     Int      @default(0)  
+  total     Int         @default(0)
   items     OrderItem[]
   payment   Payment?
 }
 
 model Payment {
-  id String @id @default(uuid())
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  orderId String @unique
-  status String
-  method String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String   @id @default(uuid())
+  order             Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId           String   @unique
+  status            String
+  method            String
+  snap_token        String?
+  snap_redirect_url String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 
 model OrderItem {
@@ -97,9 +116,9 @@ model OrderItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  orderId   String   
+  orderId   String
   menu      Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  menuId    String   
+  menuId    String
   quantity  Int
   total     Int
 }

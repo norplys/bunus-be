@@ -4,15 +4,30 @@ import {
   deleteOrder,
 } from "../repositories/order";
 import { Request, Response } from "express";
+import { midtrans } from "../helper/midtrans";
+import { randomUUID } from "crypto";
 
 const createOrderController = async (req: Request, res: Response) => {
   try {
+    const user = res.locals.user;
     const { total, items } = req.body;
     const { id } = res.locals.user;
-    const order = await createOrder(total, items, id);
+    const transaction_id = randomUUID();
+    const { token, redirect_url } = await midtrans(
+      transaction_id,
+      total,
+      items,
+      user.name,
+      user.email,
+    );
+    const order = await createOrder(total, items, id, token, redirect_url);
     res.status(201).json({
       status: "Success",
-      data: order,
+      data: {
+        order,
+        snap_token: token,
+        snap_redirect_url: redirect_url,
+      },
     });
   } catch (err) {
     console.log(err);

@@ -1,6 +1,12 @@
 import { prisma } from "../helper/prismaClient";
 
-const createOrder = (total: number, items: any, userId: string) => {
+const createOrder = (
+  total: number,
+  items: any,
+  userId: string,
+  token: string,
+  redirect_url: string,
+) => {
   return prisma.order.create({
     data: {
       userId,
@@ -9,6 +15,8 @@ const createOrder = (total: number, items: any, userId: string) => {
         create: {
           status: "pending",
           method: "cash",
+          snap_token: token,
+          snap_redirect_url: redirect_url,
         },
       },
       items: {
