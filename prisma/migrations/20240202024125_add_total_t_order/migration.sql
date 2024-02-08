@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Order" ADD COLUMN     "total" INTEGER NOT NULL DEFAULT 0;

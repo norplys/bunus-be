@@ -44,7 +44,7 @@ const getAllUserOrder = (userId: string) => {
   });
 };
 
-const deleteOrder = (userId: string, id: string) => {
+const deleteOrder = (id: string) => {
   return prisma.order.delete({
     where: {
       id,

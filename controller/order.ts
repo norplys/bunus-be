@@ -58,8 +58,7 @@ const getAllUserOrderController = async (req: Request, res: Response) => {
 const deleteOrderController = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { id: userId } = res.locals.user;
-    const order = await deleteOrder(userId, id);
+    const order = await deleteOrder(id);
     res.status(200).json({
       status: "Success",
       data: order,
