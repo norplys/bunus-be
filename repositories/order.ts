@@ -1,6 +1,7 @@
 import { prisma } from "../helper/prismaClient";
 
 const createOrder = (
+  transaction_id: string,
   total: number,
   items: any,
   userId: string,
@@ -9,12 +10,13 @@ const createOrder = (
 ) => {
   return prisma.order.create({
     data: {
+      id: transaction_id,
       userId,
       total,
       payment: {
         create: {
-          status: "pending",
-          method: "cash",
+          status: null,
+          method: null,
           snap_token: token,
           snap_redirect_url: redirect_url,
         },
@@ -36,6 +38,9 @@ const getAllUserOrder = (userId: string) => {
     where: {
       userId,
     },
+    include: {
+      payment: true,
+    },
   });
 };
 
@@ -47,4 +52,13 @@ const deleteOrder = (userId: string, id: string) => {
   });
 };
 
-export { createOrder, getAllUserOrder, deleteOrder };
+const updatePaymentOrder = (id: string, data: object) => {
+  return prisma.payment.update({
+    where: {
+      orderId: id,
+    },
+    data,
+  });
+};
+
+export { createOrder, getAllUserOrder, deleteOrder, updatePaymentOrder };

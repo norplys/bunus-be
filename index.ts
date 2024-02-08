@@ -35,6 +35,7 @@ import {
   createOrderController,
   getAllUserOrderController,
   deleteOrderController,
+  midtransNotification,
 } from "./controller/order";
 import { validateOrderBody } from "./services/order";
 import { redirect, oAuthExist, findAndCreateUser } from "./services/oAuth2";
@@ -101,6 +102,8 @@ app.delete("/v1/cart", validateJwt, getUserCartService, deleteCart);
 app.get("/v1/orders", validateJwt, getAllUserOrderController);
 app.post("/v1/orders", validateJwt, validateOrderBody, createOrderController);
 app.delete("/v1/orders/:id", validateJwt, deleteOrderController);
+// midtrans
+app.post("/v1/midtrans-notification", midtransNotification);
 
 app.listen(port, () =>
   console.log(`Server is running on port http://localhost:${port}`),

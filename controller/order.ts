@@ -2,6 +2,7 @@ import {
   createOrder,
   getAllUserOrder,
   deleteOrder,
+  updatePaymentOrder,
 } from "../repositories/order";
 import { Request, Response } from "express";
 import { midtrans } from "../helper/midtrans";
@@ -11,7 +12,7 @@ const createOrderController = async (req: Request, res: Response) => {
   try {
     const user = res.locals.user;
     const { total, items } = req.body;
-    const { id } = res.locals.user;
+    const { id: userId } = res.locals.user;
     const transaction_id = randomUUID();
     const { token, redirect_url } = await midtrans(
       transaction_id,
@@ -20,7 +21,14 @@ const createOrderController = async (req: Request, res: Response) => {
       user.name,
       user.email,
     );
-    const order = await createOrder(total, items, id, token, redirect_url);
+    const order = await createOrder(
+      transaction_id,
+      total,
+      items,
+      userId,
+      token,
+      redirect_url,
+    );
     res.status(201).json({
       status: "Success",
       data: {
@@ -61,8 +69,27 @@ const deleteOrderController = async (req: Request, res: Response) => {
   }
 };
 
+const midtransNotification = async (req: Request, res: Response) => {
+  try {
+    const { order_id, transaction_status, payment_type } = req.body;
+    if (transaction_status === "settlement") {
+      await updatePaymentOrder(order_id, {
+        status: transaction_status,
+        method: payment_type,
+      });
+    }
+    res.status(200).json({
+      status: "Success",
+      message: "Notification received",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export {
   createOrderController,
   getAllUserOrderController,
   deleteOrderController,
+  midtransNotification,
 };

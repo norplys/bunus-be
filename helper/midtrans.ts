@@ -23,9 +23,9 @@ const midtrans = async (
       email,
     },
     callbacks: {
-      finish: `${process.env.FRONT_END_URL}/midtrans/finish`,
-      error: `${process.env.FRONT_END_URL}/midtrans/error`,
-      pending: `${process.env.FRONT_END_URL}/midtrans/pending`,
+      finish: `https://bunus.vercel.app/`,
+      error: `https://bunus.vercel.app/`,
+      pending: `https://bunus.vercel.app/`,
     },
   };
   const data = await snap.createTransaction(payload);
