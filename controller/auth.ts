@@ -2,11 +2,19 @@ import { Request, Response } from "express";
 import { encryptPassword, comparePassword, signJwt } from "../services/auth";
 import { createUser } from "../repositories/auth";
 import { exclude } from "../helper/exclude";
+import { randomUUID, randomBytes } from "crypto";
+import { sendMail } from "../helper/nodeMailer";
+import { formatEmail } from "../helper/emailFormat";
 
 const register = async (req: Request, res: Response) => {
   const { email, password, name, phone } = req.body;
   const hashedPassword = await encryptPassword(password);
-  const user = await createUser(email, hashedPassword, name, phone);
+  const id = randomUUID();
+  const token = randomBytes(32).toString("hex");
+  const subject = "Bubur Nusantara - Verify Your Email";
+  const html = formatEmail(name, token);
+  await sendMail(email, subject, html);
+  const user = await createUser(id, email, hashedPassword, name, phone, token);
   const excludeUser = exclude(user, [
     "id",
     "createdAt",

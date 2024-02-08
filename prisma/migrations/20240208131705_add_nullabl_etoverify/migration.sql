@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Token" ALTER COLUMN "expiredAt" DROP NOT NULL,
+ALTER COLUMN "token" DROP NOT NULL;

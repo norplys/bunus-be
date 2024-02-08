@@ -34,15 +34,15 @@ model User {
 model Verify {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String   @unique
-  expiredAt   DateTime
-  verifyToken String
+  expiredAt   DateTime?
+  verifyToken String?
 }
 
 model Token {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String   @unique
-  expiredAt DateTime
-  token     String
+  expiredAt DateTime?
+  token     String?
 }
 
 model Cart {

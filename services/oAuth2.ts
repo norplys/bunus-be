@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { google } from "googleapis";
 import { findUser, createUser } from "../repositories/auth";
+import { randomUUID } from "crypto";
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
@@ -51,8 +52,9 @@ const findAndCreateUser = async (
   try {
     const { email, name } = res.locals.user;
     let user = await findUser(email);
+    const id = randomUUID();
     if (!user) {
-      user = await createUser(email, null, name, null);
+      user = await createUser(id, email, null, name, null, null, true);
     }
     res.locals.user = user;
     next();
