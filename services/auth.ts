@@ -111,6 +111,12 @@ const validateLogin = async (
         message: "Email not registered",
       });
     }
+    if (!checkUser.isVerified) {
+      return res.status(401).json({
+        status: "forbidden",
+        message: "Email not verified, please verify your email",
+      });
+    }
     res.locals.user = checkUser;
     next();
   } catch (err) {

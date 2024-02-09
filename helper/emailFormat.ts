@@ -8,7 +8,7 @@ const formatEmail = (name: string, token: string) => {
     <p style="font-size:1.1em">Halo,${name}</p>
     <p>Terimakasih telah mendaftar menjadi pelanggan kami,<br/>silahkan tekan tombol dibawah ini untuk memverifikasi email anda</p>
     <p>
-    <a href="https://bunus.vercel.app/" style="background: #E55604;margin: 0 auto;width: max-content;padding: 10px 10px;color: #fff;border-radius: 4px;">Tekan Disini</a>
+    <a href="https://bunus.vercel.app/validate?token=${token}" style="background: #E55604;margin: 0 auto;width: max-content;padding: 10px 10px;color: #fff;border-radius: 4px;">Tekan Disini</a>
     <p style="font-size:0.9em;">Silahkan abaikan email ini atau beritahu kami jika anda tidak meminta email ini</p>
     <hr style="border:none;border-top:1px solid #FE7A36" />
     <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
