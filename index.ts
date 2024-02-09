@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import {
   validateRegisterBody,
   validateLogin,
@@ -44,6 +45,7 @@ import { redirect, oAuthExist, findAndCreateUser } from "./services/oAuth2";
 import { googleController } from "./controller/oAuth2";
 
 const app = express();
+app.use(cors());
 const port = process.env.APP_PORT || 3000;
 
 app.use(express.json());
