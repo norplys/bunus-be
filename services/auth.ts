@@ -60,6 +60,19 @@ const validateRegisterBody = async (
     const checkUser = await findUser(email);
     const checkPhone = await findPhone(phone);
     if (checkUser || checkPhone) {
+      if (checkUser?.isVerified === false) {
+        const token = randomUUID();
+        await updateVerifyToken(checkUser.id, token);
+        await sendMail(
+          checkUser.email,
+          "Bubur Nusantara - Verify Your Email",
+          formatEmail(checkUser.name, token),
+        );
+        return res.status(401).json({
+          status: "error",
+          message: "Email not verified, sending new email verification",
+        });
+      }
       return res.status(400).json({
         status: "error",
         message: "Email or Phone already exists!",
@@ -180,6 +193,12 @@ const checkTokenExist = async (
 ) => {
   try {
     const token = req.params.token;
+    if (!token) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Token is required",
+      });
+    }
     const checkToken = await getVerifyToken(token);
     if (!checkToken) {
       return res.status(400).json({
