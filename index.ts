@@ -44,7 +44,7 @@ import { redirect, oAuthExist, findAndCreateUser } from "./services/oAuth2";
 import { googleController } from "./controller/oAuth2";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.get("/", (req, res) => {
