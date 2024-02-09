@@ -12,12 +12,13 @@ const main = async () => {
     data: {
       email: "admin123@gmail.com",
       name: "test",
-      password: await hashPassword("admin123"),
+      password: await hashPassword(process.env.ADMIN_PASSWORD!),
       phone: "08123456789",
       role: "ADMIN",
       cart: {
         create: {},
       },
+      isVerified: true,
     },
   });
 
