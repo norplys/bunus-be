@@ -1,10 +1,19 @@
-import { findUser, findPhone, findId } from "../repositories/auth";
+import {
+  findUser,
+  findPhone,
+  findId,
+  getVerifyToken,
+  updateVerifyToken,
+} from "../repositories/auth";
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
 import { compare, hash } from "bcrypt";
 import { JwtPayload, Secret, sign, verify } from "jsonwebtoken";
 import { exclude } from "../helper/exclude";
 import { errorMap } from "../helper/zError";
+import { sendMail } from "../helper/nodeMailer";
+import { formatEmail } from "../helper/emailFormat";
+import { randomUUID } from "crypto";
 
 const indonesiaPhone = new RegExp(/^(^\+62\s?|^0)(\d{3,4}-?){2}\d{3,4}$/);
 
@@ -164,6 +173,61 @@ const validateAdmin = async (
   next();
 };
 
+const checkTokenExist = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const token = req.params.token;
+    const checkToken = await getVerifyToken(token);
+    if (!checkToken) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Invalid Token",
+      });
+    }
+    res.locals.token = checkToken;
+    next();
+  } catch (err) {
+    return res.status(500).json({
+      status: "Failed",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const checkExpiredToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const token = res.locals.token;
+    const today = new Date(Date.now()).toISOString();
+    if (today > token.expiredAt) {
+      const userId = token.userId;
+      const newToken = randomUUID();
+      await updateVerifyToken(userId, newToken);
+      await sendMail(
+        token.user.email,
+        "Bubur Nusantara - Verify Your Email",
+        formatEmail(token.user.name, newToken),
+      );
+      return res.status(401).json({
+        status: "Failed",
+        message: "Token Expired, sending new email verification",
+      });
+    }
+    next();
+  } catch (err) {
+    return res.status(500).json({
+      status: "Failed",
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export {
   validateRegisterBody,
   validateLogin,
@@ -173,4 +237,6 @@ export {
   verifyJwt,
   validateJwt,
   validateAdmin,
+  checkTokenExist,
+  checkExpiredToken,
 };

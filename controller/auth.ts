@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { encryptPassword, comparePassword, signJwt } from "../services/auth";
-import { createUser } from "../repositories/auth";
+import { createUser, verifyEmail } from "../repositories/auth";
 import { exclude } from "../helper/exclude";
-import { randomUUID, randomBytes } from "crypto";
+import { randomUUID } from "crypto";
 import { sendMail } from "../helper/nodeMailer";
 import { formatEmail } from "../helper/emailFormat";
 
@@ -10,7 +10,7 @@ const register = async (req: Request, res: Response) => {
   const { email, password, name, phone } = req.body;
   const hashedPassword = await encryptPassword(password);
   const id = randomUUID();
-  const token = randomBytes(32).toString("hex");
+  const token = randomUUID();
   const subject = "Bubur Nusantara - Verify Your Email";
   const html = formatEmail(name, token);
   await sendMail(email, subject, html);
@@ -73,4 +73,14 @@ const getMe = async (req: Request, res: Response) => {
   });
 };
 
-export { register, login, getMe };
+const validateEmail = async (req: Request, res: Response) => {
+  const { token } = req.params;
+  const verify = await verifyEmail(token);
+  res.status(200).json({
+    status: "Success",
+    message: "Successfully Verify Email",
+    data: verify,
+  });
+};
+
+export { register, login, getMe, validateEmail };

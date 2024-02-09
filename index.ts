@@ -4,8 +4,10 @@ import {
   validateLogin,
   validateJwt,
   validateAdmin,
+  checkTokenExist,
+  checkExpiredToken,
 } from "./services/auth";
-import { register, login, getMe } from "./controller/auth";
+import { register, login, getMe, validateEmail } from "./controller/auth";
 import { category } from "./controller/category";
 import {
   getMenus,
@@ -62,6 +64,12 @@ app.get(
 app.post("/v1/register", validateRegisterBody, register);
 app.post("/v1/login", validateLogin, login);
 app.get("/v1/get-me", validateJwt, getMe);
+app.put(
+  "/v1/validate-email/:token",
+  checkTokenExist,
+  checkExpiredToken,
+  validateEmail,
+);
 
 // menu
 app.get("/v1/categories", category);

@@ -54,4 +54,56 @@ const findId = (id: string) => {
     },
   });
 };
-export { createUser, findUser, findPhone, findId };
+
+const getVerifyToken = (token: string) => {
+  return prisma.verify.findUnique({
+    where: {
+      verifyToken: token,
+    },
+  });
+};
+
+const deleteVerifyToken = (token: string) => {
+  return prisma.verify.delete({
+    where: {
+      verifyToken: token,
+    },
+  });
+};
+
+const updateVerifyToken = (id: string, token: string) => {
+  return prisma.verify.update({
+    where: {
+      userId: id,
+    },
+    data: {
+      verifyToken: token,
+      expiredAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    },
+  });
+};
+
+const verifyEmail = (token: string) => {
+  return prisma.verify.update({
+    where: {
+      verifyToken: token,
+    },
+    data: {
+      user: {
+        update: {
+          isVerified: true,
+        },
+      },
+    },
+  });
+};
+export {
+  createUser,
+  findUser,
+  findPhone,
+  findId,
+  getVerifyToken,
+  verifyEmail,
+  deleteVerifyToken,
+  updateVerifyToken,
+};
