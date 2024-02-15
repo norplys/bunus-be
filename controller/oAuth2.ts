@@ -9,11 +9,7 @@ const googleController = (req: Request, res: Response) => {
     name,
   };
   const token = signJwt(payload);
-  res
-    .status(200)
-    .redirect(
-      `https://bunus.vercel.app?token=${token}&email=${email}&name=${name}`,
-    );
+  res.status(200).redirect(`https://bunus.vercel.app?token=${token}`);
 };
 
 export { googleController };
