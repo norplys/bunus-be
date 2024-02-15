@@ -12,7 +12,7 @@ const googleController = (req: Request, res: Response) => {
   res
     .status(200)
     .redirect(
-      `https://bunus.vercel.app?token=${token}email=${email}name=${name}`,
+      `https://bunus.vercel.app?token=${token}&email=${email}&name=${name}`,
     );
 };
 
