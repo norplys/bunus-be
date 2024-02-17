@@ -35,7 +35,7 @@ const login = async (req: Request, res: Response) => {
     const user = res.locals.user;
     const isValid = await comparePassword(password, user.password);
     if (!isValid) {
-      return res.status(401).json({
+      return res.status(400).json({
         status: "Forbidden",
         message: "Invalid Password",
       });
