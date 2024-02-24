@@ -68,13 +68,15 @@ const getCartData = (id: string) => {
   });
 };
 
-const deleteCartData = (id: string) => {
+const deleteCartData = (menuId: string, cartId: string) => {
   return prisma.cartItem.deleteMany({
     where: {
-      cartId: id,
+      cartId,
+      menuId,
     },
   });
 };
+
 export {
   getUserCart,
   createCartItem,
