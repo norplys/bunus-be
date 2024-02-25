@@ -4,6 +4,7 @@ import {
   getCartData,
   deleteCartData,
   updateCartItem,
+  deleteCartItem,
 } from "../repositories/cart";
 
 const createCartItemController = async (req: Request, res: Response) => {
@@ -85,4 +86,23 @@ const deleteCart = async (req: Request, res: Response) => {
   }
 };
 
-export { createCartItemController, getCart, deleteCart, updateCart };
+const deleteCartItemController = async (req: Request, res: Response) => {
+  try {
+    const id = res.locals.cartItemId;
+    await deleteCartItem(id);
+    res.status(200).json({
+      status: "Success",
+      message: `Successfully Delete Data with id ${id}`,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export {
+  createCartItemController,
+  getCart,
+  deleteCart,
+  updateCart,
+  deleteCartItemController,
+};
