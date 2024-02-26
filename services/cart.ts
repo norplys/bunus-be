@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { getUserCart, getCartItem, updateCartItem } from "../repositories/cart";
+import {
+  getUserCart,
+  getCartItem,
+  updateCartItem,
+  findCartItem,
+} from "../repositories/cart";
 import { z } from "zod";
 import { errorMap } from "../helper/zError";
 import { getDetailMenu } from "../repositories/menu";
@@ -113,10 +118,29 @@ const countTotal = async (req: Request, res: Response, next: NextFunction) => {
     console.log(err);
   }
 };
+
+const getSingleCart = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const id = req.params.id;
+  const cartItem = await findCartItem(id);
+  if (!cartItem) {
+    return res.status(404).json({
+      status: "Failed",
+      message: "Cart data not found",
+    });
+  }
+  res.locals.cartItem = cartItem;
+  next();
+};
+
 export {
   getUserCartService,
   validateCartBody,
   countTotal,
   checkCartItem,
   checkCartUpdate,
+  getSingleCart,
 };

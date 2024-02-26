@@ -34,6 +34,7 @@ import {
   countTotal,
   checkCartItem,
   checkCartUpdate,
+  getSingleCart,
 } from "./services/cart";
 import {
   createOrderController,
@@ -109,7 +110,12 @@ app.put(
 );
 app.get("/v1/cart", validateJwt, getUserCartService, getCart);
 app.delete("/v1/cart", validateJwt, getUserCartService, deleteCart);
-app.delete("/v1/cart-item/:id", validateJwt, deleteCartItemController);
+app.delete(
+  "/v1/cart-item/:id",
+  validateJwt,
+  getSingleCart,
+  deleteCartItemController,
+);
 // order
 app.get("/v1/orders", validateJwt, getAllUserOrderController);
 app.post("/v1/orders", validateJwt, validateOrderBody, createOrderController);

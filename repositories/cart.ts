@@ -84,6 +84,14 @@ const deleteCartItem = (id: string) => {
   });
 };
 
+const findCartItem = (id: string) => {
+  return prisma.cartItem.findUnique({
+    where: {
+      id,
+    },
+  });
+};
+
 export {
   getUserCart,
   createCartItem,
@@ -92,4 +100,5 @@ export {
   getCartData,
   deleteCartData,
   deleteCartItem,
+  findCartItem,
 };
