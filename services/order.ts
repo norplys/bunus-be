@@ -6,7 +6,6 @@ const orderBodySchema = z.object({
   total: z.number(),
   items: z.array(
     z.object({
-      menuId: z.string(),
       quantity: z.number(),
       total: z.number(),
     }),
