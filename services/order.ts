@@ -8,6 +8,7 @@ const orderBodySchema = z.object({
     z.object({
       quantity: z.number(),
       total: z.number(),
+      menuId: z.string(),
     }),
   ),
 });
