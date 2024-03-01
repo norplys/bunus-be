@@ -12,7 +12,6 @@ const createOrderController = async (req: Request, res: Response) => {
   try {
     const user = res.locals.user;
     const { total, items } = req.body;
-    const { id: userId } = res.locals.user;
     const transaction_id = randomUUID();
     const { token, redirect_url } = await midtrans(
       transaction_id,
@@ -25,7 +24,7 @@ const createOrderController = async (req: Request, res: Response) => {
       transaction_id,
       total,
       items,
-      userId,
+      user.id,
       token,
       redirect_url,
     );
