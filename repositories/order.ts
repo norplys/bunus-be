@@ -8,29 +8,38 @@ const createOrder = (
   token: string,
   redirect_url: string,
 ) => {
-  return prisma.order.create({
-    data: {
-      id: transaction_id,
-      userId,
-      total,
-      payment: {
-        create: {
-          status: null,
-          method: null,
-          snap_token: token,
-          snap_redirect_url: redirect_url,
+  return prisma.$transaction([
+    prisma.order.create({
+      data: {
+        id: transaction_id,
+        userId,
+        total,
+        payment: {
+          create: {
+            status: null,
+            method: null,
+            snap_token: token,
+            snap_redirect_url: redirect_url,
+          },
+        },
+        items: {
+          createMany: {
+            data: items,
+          },
         },
       },
-      items: {
-        createMany: {
-          data: items,
+      include: {
+        items: true,
+      },
+    }),
+    prisma.cartItem.deleteMany({
+      where: {
+        cart: {
+          userId,
         },
       },
-    },
-    include: {
-      items: true,
-    },
-  });
+    }),
+  ]);
 };
 
 const getAllUserOrder = (userId: string) => {

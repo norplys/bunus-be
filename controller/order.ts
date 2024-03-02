@@ -20,7 +20,7 @@ const createOrderController = async (req: Request, res: Response) => {
       user.name,
       user.email,
     );
-    const order = await createOrder(
+    const [order, deleteCart] = await createOrder(
       transaction_id,
       total,
       items,
