@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,11 +5,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-enum Role {
-  ADMIN
-  USER
 }
 
 model User {
@@ -25,32 +17,32 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   isVerified Boolean  @default(false)
-  verify     Verify?
   cart       Cart?
-  token      Token?
   order      Order[]
+  token      Token?
+  verify     Verify?
 }
 
 model Verify {
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String   @unique
+  userId      String    @unique
   expiredAt   DateTime?
-  verifyToken String?  @unique
+  verifyToken String?   @unique
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Token {
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String   @unique
+  userId    String    @unique
   expiredAt DateTime?
   token     String?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Cart {
   id        String     @id @default(uuid())
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   items     CartItem[]
 }
 
@@ -58,12 +50,12 @@ model CartItem {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  cart      Cart     @relation(fields: [cartId], references: [id])
   cartId    String
   quantity  Int
   total     Int
-  menu      Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   menuId    String   @unique
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  menu      Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade)
 }
 
 model Menu {
@@ -74,9 +66,9 @@ model Menu {
   price       Int
   image       String
   description String
-  category    Category    @relation(fields: [categoryId], references: [id])
   categoryId  String
   cartItem    CartItem?
+  category    Category    @relation(fields: [categoryId], references: [id])
   orderItem   OrderItem[]
 }
 
@@ -92,16 +84,15 @@ model Order {
   id        String      @id @default(uuid())
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   total     Int         @default(0)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   items     OrderItem[]
   payment   Payment?
 }
 
 model Payment {
   id                String   @id @default(uuid())
-  order             Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   orderId           String   @unique
   status            String?
   method            String?
@@ -109,16 +100,22 @@ model Payment {
   snap_redirect_url String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+  order             Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model OrderItem {
-  id        String   @id @default(uuid()) 
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt 
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  updatedAt DateTime @updatedAt
   orderId   String
-  menu      Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   menuId    String
   quantity  Int
   total     Int
+  menu      Menu     @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  ADMIN
+  USER
 }

@@ -108,6 +108,7 @@ app.put(
   checkCartUpdate,
   updateCart,
 );
+app.get("/v1/cart/notif", validateJwt, getUserCartService);
 app.get("/v1/cart", validateJwt, getUserCartService, getCart);
 app.delete("/v1/cart", validateJwt, getUserCartService, deleteCart);
 app.delete(

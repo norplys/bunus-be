@@ -88,7 +88,7 @@ const deleteCart = async (req: Request, res: Response) => {
 
 const deleteCartItemController = async (req: Request, res: Response) => {
   try {
-    const id = res.locals.cartItemId;
+    const { id } = res.locals.cartItem;
     await deleteCartItem(id);
     res.status(200).json({
       status: "Success",

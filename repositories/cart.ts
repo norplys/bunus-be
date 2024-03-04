@@ -92,6 +92,14 @@ const findCartItem = (id: string) => {
   });
 };
 
+const cartNotif = (id: string) => {
+  return prisma.cartItem.count({
+    where: {
+      cartId: id,
+    },
+  });
+};
+
 export {
   getUserCart,
   createCartItem,
@@ -101,4 +109,5 @@ export {
   deleteCartData,
   deleteCartItem,
   findCartItem,
+  cartNotif,
 };
