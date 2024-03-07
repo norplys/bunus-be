@@ -5,6 +5,7 @@ import {
   deleteCartData,
   updateCartItem,
   deleteCartItem,
+  cartNotif,
 } from "../repositories/cart";
 
 const createCartItemController = async (req: Request, res: Response) => {
@@ -99,10 +100,25 @@ const deleteCartItemController = async (req: Request, res: Response) => {
   }
 };
 
+const cartNotifController = async (req: Request, res: Response) => {
+  try {
+    const id = res.locals.cartId;
+    const data = await cartNotif(id);
+    res.status(200).json({
+      status: "Success",
+      message: "Successfully Retrieve Data",
+      data: data,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export {
   createCartItemController,
   getCart,
   deleteCart,
   updateCart,
   deleteCartItemController,
+  cartNotifController,
 };
