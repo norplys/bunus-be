@@ -253,6 +253,40 @@ const checkExpiredToken = async (
   }
 };
 
+const validateForgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const emailSchema = z.object({
+      email: z.string().email(),
+    });
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Email is required",
+      });
+    }
+    emailSchema.parse({ email });
+    const user = await findUser(email);
+    if (!user) {
+      return res.status(404).json({
+        status: "Failed",
+        message: "Email not registered",
+      });
+    }
+    res.locals.user = user;
+    next();
+  } catch (err) {
+    return res.status(500).json({
+      status: "Failed",
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export {
   validateRegisterBody,
   validateLogin,
@@ -264,4 +298,5 @@ export {
   validateAdmin,
   checkTokenExist,
   checkExpiredToken,
+  validateForgotPassword,
 };

@@ -1,10 +1,14 @@
 import { Request, Response } from "express";
 import { encryptPassword, comparePassword, signJwt } from "../services/auth";
-import { createUser, verifyEmail } from "../repositories/auth";
+import {
+  createUser,
+  verifyEmail,
+  createForgotToken,
+} from "../repositories/auth";
 import { exclude } from "../helper/exclude";
 import { randomUUID } from "crypto";
 import { sendMail } from "../helper/nodeMailer";
-import { formatEmail } from "../helper/emailFormat";
+import { formatEmail, forgotPasswordEmail } from "../helper/emailFormat";
 
 const register = async (req: Request, res: Response) => {
   const { email, password, name, phone } = req.body;
@@ -83,4 +87,20 @@ const validateEmail = async (req: Request, res: Response) => {
   });
 };
 
-export { register, login, getMe, validateEmail };
+const forgotPasswordController = async (req: Request, res: Response) => {
+  try {
+    const { id, name, email } = res.locals.user;
+    const token = randomUUID();
+    const subject = "Bubur Nusantara - Reset Your Password";
+    const html = forgotPasswordEmail(name, token);
+    await createForgotToken(id, token);
+    await sendMail(email, subject, html);
+    res.status(200).json({
+      status: "Success",
+      message: "Email has been sent",
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+export { register, login, getMe, validateEmail, forgotPasswordController };

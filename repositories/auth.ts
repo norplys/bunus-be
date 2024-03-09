@@ -97,6 +97,28 @@ const verifyEmail = (token: string) => {
     },
   });
 };
+
+const createForgotToken = (id: string, token: string) => {
+  return prisma.token.create({
+    data: {
+      userId: id,
+      token,
+      expiredAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+    },
+  });
+};
+
+const updatePassword = (id: string, password: string) => {
+  return prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      password,
+    },
+  });
+};
+
 export {
   createUser,
   findUser,
@@ -106,4 +128,6 @@ export {
   verifyEmail,
   deleteVerifyToken,
   updateVerifyToken,
+  updatePassword,
+  createForgotToken,
 };

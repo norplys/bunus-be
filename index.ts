@@ -7,8 +7,15 @@ import {
   validateAdmin,
   checkTokenExist,
   checkExpiredToken,
+  validateForgotPassword,
 } from "./services/auth";
-import { register, login, getMe, validateEmail } from "./controller/auth";
+import {
+  register,
+  login,
+  getMe,
+  validateEmail,
+  forgotPasswordController,
+} from "./controller/auth";
 import { category } from "./controller/category";
 import {
   getMenus,
@@ -74,6 +81,11 @@ app.put(
   checkTokenExist,
   checkExpiredToken,
   validateEmail,
+);
+app.post(
+  "/v1/forgot-password",
+  validateForgotPassword,
+  forgotPasswordController,
 );
 
 // menu
