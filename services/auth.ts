@@ -266,12 +266,6 @@ const validateForgotPassword = async (
       email: z.string().email(),
     });
     const { email } = req.body;
-    if (!email) {
-      return res.status(400).json({
-        status: "Failed",
-        message: "Email is required",
-      });
-    }
     emailSchema.parse({ email });
     const user = await findUser(email);
     if (!user) {
@@ -316,6 +310,7 @@ const checkIsForgotTokenExist = async (
         message: "Token Found, sending new email verification",
       });
     }
+    next();
   } catch (err) {
     return res.status(500).json({
       status: "Failed",
