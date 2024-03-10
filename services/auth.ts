@@ -4,6 +4,8 @@ import {
   findId,
   getVerifyToken,
   updateVerifyToken,
+  getForgotToken,
+  deleteForgotToken,
 } from "../repositories/auth";
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
@@ -12,7 +14,8 @@ import { JwtPayload, Secret, sign, verify } from "jsonwebtoken";
 import { exclude } from "../helper/exclude";
 import { errorMap } from "../helper/zError";
 import { sendMail } from "../helper/nodeMailer";
-import { formatEmail } from "../helper/emailFormat";
+import { checkIsExpired } from "../helper/checkIsExpired";
+import { formatEmail, forgotPasswordEmail } from "../helper/emailFormat";
 import { randomUUID } from "crypto";
 
 const indonesiaPhone = new RegExp(/^(^\+62\s?|^0)(\d{3,4}-?){2}\d{3,4}$/);
@@ -229,8 +232,8 @@ const checkExpiredToken = async (
 ) => {
   try {
     const token = res.locals.token;
-    const today = new Date(Date.now()).toISOString();
-    if (today > token.expiredAt) {
+    const isExpired = checkIsExpired(token.expiredAt);
+    if (isExpired) {
       const userId = token.userId;
       const newToken = randomUUID();
       await updateVerifyToken(userId, newToken);
@@ -287,6 +290,40 @@ const validateForgotPassword = async (
   }
 };
 
+const checkIsForgotTokenExist = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id, name, email } = res.locals.user;
+    const token = await getForgotToken(id);
+    if (token) {
+      const isExpired = checkIsExpired(token.expiredAt!.toISOString());
+      if (isExpired) {
+        await deleteForgotToken(id);
+        next();
+        return;
+      }
+      const forgotEmailFormat = forgotPasswordEmail(name, token.token!);
+      await sendMail(
+        email,
+        "Bubur Nusantara - Reset Your Password",
+        forgotEmailFormat,
+      );
+      return res.status(200).json({
+        status: "Success",
+        message: "Token Found, sending new email verification",
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      status: "Failed",
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export {
   validateRegisterBody,
   validateLogin,
@@ -299,4 +336,5 @@ export {
   checkTokenExist,
   checkExpiredToken,
   validateForgotPassword,
+  checkIsForgotTokenExist,
 };

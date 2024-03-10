@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node --transpile-only index",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "run": "nodemon --exec ts-node --transpile-only index.ts"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

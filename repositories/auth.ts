@@ -119,6 +119,22 @@ const updatePassword = (id: string, password: string) => {
   });
 };
 
+const getForgotToken = (id: string) => {
+  return prisma.token.findUnique({
+    where: {
+      userId: id,
+    },
+  });
+};
+
+const deleteForgotToken = (id: string) => {
+  return prisma.token.delete({
+    where: {
+      userId: id,
+    },
+  });
+};
+
 export {
   createUser,
   findUser,
@@ -130,4 +146,6 @@ export {
   updateVerifyToken,
   updatePassword,
   createForgotToken,
+  getForgotToken,
+  deleteForgotToken,
 };

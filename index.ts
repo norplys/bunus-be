@@ -8,6 +8,7 @@ import {
   checkTokenExist,
   checkExpiredToken,
   validateForgotPassword,
+  checkIsForgotTokenExist,
 } from "./services/auth";
 import {
   register,
@@ -85,6 +86,7 @@ app.put(
 app.post(
   "/v1/forgot-password",
   validateForgotPassword,
+  checkIsForgotTokenExist,
   forgotPasswordController,
 );
 
