@@ -9,6 +9,8 @@ import {
   checkExpiredToken,
   validateForgotPassword,
   checkIsForgotTokenExist,
+  validateForgotBody,
+  validateForgotToken,
 } from "./services/auth";
 import {
   register,
@@ -16,6 +18,7 @@ import {
   getMe,
   validateEmail,
   forgotPasswordController,
+  resetPasswordController,
 } from "./controller/auth";
 import { category } from "./controller/category";
 import {
@@ -82,6 +85,12 @@ app.put(
   checkTokenExist,
   checkExpiredToken,
   validateEmail,
+);
+app.put(
+  "/v1/reset-password/:token",
+  validateForgotToken,
+  validateForgotBody,
+  resetPasswordController,
 );
 app.post(
   "/v1/forgot-password",

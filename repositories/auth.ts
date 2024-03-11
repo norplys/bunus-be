@@ -127,6 +127,14 @@ const getForgotToken = (id: string) => {
   });
 };
 
+const getForgotTokenByToken = (token: string) => {
+  return prisma.token.findFirst({
+    where: {
+      token,
+    },
+  });
+};
+
 const deleteForgotToken = (id: string) => {
   return prisma.token.delete({
     where: {
@@ -148,4 +156,5 @@ export {
   createForgotToken,
   getForgotToken,
   deleteForgotToken,
+  getForgotTokenByToken,
 };

@@ -6,6 +6,7 @@ import {
   updateVerifyToken,
   getForgotToken,
   deleteForgotToken,
+  getForgotTokenByToken,
 } from "../repositories/auth";
 import { Request, Response, NextFunction } from "express";
 import { z } from "zod";
@@ -319,6 +320,77 @@ const checkIsForgotTokenExist = async (
   }
 };
 
+const validateForgotToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const token = req.params.token;
+    if (!token) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Token is required",
+      });
+    }
+    const checkToken = await getForgotTokenByToken(token);
+    if (!checkToken) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Invalid Token",
+      });
+    }
+    const isExpired = checkIsExpired(checkToken.expiredAt!.toISOString());
+    if (isExpired) {
+      await deleteForgotToken(checkToken.userId);
+      return res.status(400).json({
+        status: "Failed",
+        message: "Token Expired",
+      });
+    }
+    res.locals.token = checkToken;
+    next();
+  } catch (err) {
+    return res.status(500).json({
+      status: "Failed",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const validateForgotBody = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { password } = req.body;
+    if (!password) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Password is required",
+      });
+    }
+    const passwordSchema = z.object({
+      password: z.string(),
+    });
+    passwordSchema.parse({ password });
+    next();
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      const errors = errorMap(err);
+      return res.status(400).json({
+        status: "error",
+        message: errors,
+      });
+    }
+    return res.status(500).json({
+      status: "Failed",
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export {
   validateRegisterBody,
   validateLogin,
@@ -332,4 +404,6 @@ export {
   checkExpiredToken,
   validateForgotPassword,
   checkIsForgotTokenExist,
+  validateForgotToken,
+  validateForgotBody,
 };

@@ -3,7 +3,10 @@ import { encryptPassword, comparePassword, signJwt } from "../services/auth";
 import {
   createUser,
   verifyEmail,
+  deleteVerifyToken,
   createForgotToken,
+  updatePassword,
+  deleteForgotToken,
 } from "../repositories/auth";
 import { exclude } from "../helper/exclude";
 import { randomUUID } from "crypto";
@@ -80,6 +83,7 @@ const getMe = async (req: Request, res: Response) => {
 const validateEmail = async (req: Request, res: Response) => {
   const { token } = req.params;
   const verify = await verifyEmail(token);
+  await deleteVerifyToken(token);
   res.status(200).json({
     status: "Success",
     message: "Successfully Verify Email",
@@ -103,4 +107,24 @@ const forgotPasswordController = async (req: Request, res: Response) => {
     console.log(err);
   }
 };
-export { register, login, getMe, validateEmail, forgotPasswordController };
+
+const resetPasswordController = async (req: Request, res: Response) => {
+  const { userId } = res.locals.token;
+  const { password } = req.body;
+  const hashedPassword = await encryptPassword(password);
+  const user = await updatePassword(userId, hashedPassword);
+  await deleteForgotToken(userId);
+  res.status(200).json({
+    status: "Success",
+    message: "Password has been reset",
+    data: user,
+  });
+};
+export {
+  register,
+  login,
+  getMe,
+  validateEmail,
+  forgotPasswordController,
+  resetPasswordController,
+};
