@@ -23,9 +23,8 @@ const midtrans = async (
       email,
     },
     callbacks: {
-      finish: `https://bunus.vercel.app/`,
-      error: `https://bunus.vercel.app/`,
-      pending: `https://bunus.vercel.app/`,
+      finish: `https://bunus.vercel.app/payment/success`,
+      error: `https://bunus.vercel.app/payment/error`,
     },
   };
   const data = await snap.createTransaction(payload);
