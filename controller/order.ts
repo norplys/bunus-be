@@ -70,7 +70,7 @@ const deleteOrderController = async (req: Request, res: Response) => {
 const midtransNotification = async (req: Request, res: Response) => {
   try {
     const { order_id, transaction_status, payment_type } = req.body;
-    if (transaction_status === "settlement") {
+    if (transaction_status) {
       await updatePaymentOrder(order_id, {
         status: transaction_status,
         method: payment_type,
