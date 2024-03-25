@@ -57,6 +57,8 @@ import {
 import { validateOrderBody } from "./services/order";
 import { redirect, oAuthExist, findAndCreateUser } from "./services/oAuth2";
 import { googleController } from "./controller/oAuth2";
+import { sendMailController } from "./controller/sendMail";
+import { sendMailService } from "./services/sendMail";
 
 const app = express();
 app.use(cors());
@@ -147,6 +149,9 @@ app.post("/v1/orders", validateJwt, validateOrderBody, createOrderController);
 app.delete("/v1/orders/:id", validateJwt, deleteOrderController);
 // midtrans
 app.post("/v1/midtrans-notification", midtransNotification);
+
+//mailing
+app.post("/v1/send-email", sendMailService, sendMailController);
 
 app.listen(port, () =>
   console.log(`Server is running on port http://localhost:${port}`),
